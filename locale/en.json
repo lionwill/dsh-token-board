@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Token board",
+    "description": "Live token throughput surfaces plus a full usage-stats dashboard: an animated activity summary above the account row (opens the dashboard), per-agent tok/s on session hover cards, and this session's throughput in the conversation header."
+  }
+}

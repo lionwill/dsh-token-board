@@ -1,0 +1,49 @@
+{
+  "name": "dsh-token-board",
+  "version": "0.1.0",
+  "description": "DSH Web token board: animated activity summary above the account row, per-agent tok/s on session hover cards, this session's throughput in the conversation header, and a full Chinese usage-stats dashboard (heatmap, insights, skills, model share) opened from the footer row.",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-sidebar",
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-workspace",
+        "@deepseek-ai/dsh-client-ui-conversation"
+      ]
+    }
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "token",
+    "tokens-per-second",
+    "tps",
+    "throughput",
+    "activity",
+    "board"
+  ],
+  "license": "MIT",
+  "author": "dsh-token-board contributors"
+}

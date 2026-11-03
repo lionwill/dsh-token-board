@@ -1,0 +1,6 @@
+# dsh-token-board bundle patch: one host plugin row exposing the read-only
+# token-throughput API that the client half polls.
+- insert:
+    - id: token-board
+      name: dsh-token-board
+      inject: [webServer]
