@@ -18,6 +18,7 @@
     "icon.svg",
     "docs/",
     "README.md",
+    "README.en.md",
     "LICENSE"
   ],
   "dsh": {
