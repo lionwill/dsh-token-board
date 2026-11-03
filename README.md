@@ -20,6 +20,16 @@ DSH Web 实时 Token 看板：不再用悬浮窗罗列所有会话，而是把�
 | 重试等待 retrying | 橙 `#fb923c` |
 | 空闲 idle | 灰 `#9aa0a6` |
 
+## 界面截图：不同场景下的 Token 速度
+
+**场景一：会话列表悬浮卡片** — 在侧边栏会话列表里把鼠标移到某个会话上，卡片底部会显示该会话当前进行中的主 Agent 与子 Agent 各自的实时 tok/s（下图中 `lead` 为 98.9 tok/s）。
+
+![会话列表悬浮卡片：单个会话的实时 tok/s](docs/token-speed-session-hover.jpg)
+
+**场景二：会话标题栏** — 打开某个会话后，标题栏动作区末尾（「N 个后台任务」右侧）显示本会话的整体吞吐（主 Agent + 全部子 Agent 合计）；鼠标悬停展开每个 Agent 的明细（下图中会话总吞吐 60.8 tok/s，`lead` 处于出字中）。
+
+![会话标题栏：本会话整体吞吐与悬停明细](docs/token-speed-conversation-header.jpg)
+
 ## 安装 / 部署
 
 要求：DeepSeek Harness Web profile（在 `0.2.2-alpha.2` 上开发并验证）、Node.js `^22.19.0 || >=24.0.0`。
@@ -64,6 +74,10 @@ Host 侧通过 `sessionQuery` 读取会话日志并按会话缓存摘要到 `$DS
 面板在 `indexReady:false` 时自动短轮询补全。首次安装无缓存时先显示部分/空数据，
 后台建立索引（约 10 秒级）完成后自动更新。
 只读端点：`GET /token-board/v1/usage?from&to&timeZone`。
+
+面板全貌（示例数据）：
+
+![使用统计面板：累计/峰值 Token、活动热力图、活动洞察、模型 Token 占比](docs/usage-stats-panel.jpg)
 
 ## 数据来源
 
