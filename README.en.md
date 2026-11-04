@@ -8,7 +8,7 @@ A realtime token board for DSH Web: instead of listing every session in a floati
 | --- | --- |
 | Bottom of the sidebar, above the account row | Three green/blue/yellow bars (animating in turn while there is activity, static grey when idle) + summary "N sessions active, X tok/s"; when the sidebar is collapsed to a narrow rail only the icon remains, and hovering shows a summary popover |
 | Bottom of the session-list hover card | Realtime tok/s of the session's active primary agent and subagents, each preceded by a solid status dot |
-| End of the conversation header action area (right of "N background tasks") | **Overall throughput** of the currently open session (primary agent + all subagents); hover to expand the full per-agent breakdown (paused or 0 still counted) |
+| End of the conversation header action area (right of "N background tasks") | **Overall throughput** of the currently open session (primary agent + all subagents); hover to expand the full per-agent breakdown (paused or 0 still counted). A **line-chart icon flush to the right** of the counter records one speed point per second while the session is active; hovering it shows this session's full speed history (see "Speed history chart" below) |
 | Clicking the bottom summary row | Opens the full "Usage Stats" panel: cumulative/peak tokens, longest conversation, streak days, token activity heatmap (optional year and color theme; themes come from the 8 schemes of calendar-heatmap design tokens; defaults to the full current year, future dates greyed out and not hoverable; daily/weekly/monthly/cumulative), activity insights, most-used skills, model token share (each model labelled with its provider); Chinese UI, adapts to light/dark |
 
 The status dots follow the semantics of dsh-token-hud but use this plugin's own solid-color style (no outline, no glow):
@@ -30,6 +30,15 @@ The status dots follow the semantics of dsh-token-hud but use this plugin's own 
 **Scenario 2: conversation header** — open a session and the end of the header action area (right of "N background tasks") shows the overall throughput of this session (primary agent + all subagents); hovering expands the per-agent breakdown (in the screenshot the session total is 60.8 tok/s and `lead` is streaming).
 
 ![Conversation header: overall session throughput with hover breakdown](docs/token-speed-conversation-header.jpg)
+
+## Speed history chart (conversation header)
+
+A line-chart icon sits **flush to the right** of the conversation-header throughput counter. The client reuses the existing 1s `/token-board/v1/stats` poll for **purely client-side sampling**: no extra requests, no persistence, and no LLM calls.
+
+- Samples are recorded only while the open session is **active** (primary/subagents not idle); idle seconds are skipped, so the curve **breaks** across idle spans instead of drawing fabricated zeros;
+- at most one sample per second; the X axis is time, the Y axis is the session's overall throughput (tok/s), and the curve is smoothed into cubic Bézier segments via Catmull-Rom;
+- history lives in page memory only (at most 7200 points ≈ 2 hours per session; cleared on page reload), and each session keeps its own history while you switch between them;
+- hovering/focusing the icon opens a panel styled like the throughput popover; it updates every second together with the poll and shows the sample count, peak speed and time axis.
 
 ## Installation / deployment
 
@@ -74,7 +83,7 @@ The full panel (sample data):
 
 ## Data sources
 
-The host half listens to every session's `session/event` and (on newer hosts) the per-chunk `agent/assistant-stream` broadcast, estimates output speed from a rolling character window (Chinese ≈ 1 tok/char, English ≈ 4 chars/token) and corrects it to the exact value once an `assistant/message` carries provider usage. Subagents are attributed to their parent session through `parentSession` / `origin` / `delegationDepth` in the session header, and the header and hover card aggregate "itself + all descendants". Purely in-memory, zero persistence, no session-log writes.
+The host half listens to every session's `session/event` and (on newer hosts) the per-chunk `agent/assistant-stream` broadcast, estimates output speed from a rolling character window (Chinese ≈ 1 tok/char, English ≈ 4 chars/token) and corrects it to the exact value once an `assistant/message` carries provider usage. Subagents are attributed to their parent session through `parentSession` / `origin` / `delegationDepth` in the session header, and the header and hover card aggregate "itself + all descendants". Purely in-memory, zero persistence, no session-log writes. The header speed-history chart likewise accumulates in browser memory only (one active sample per second); it issues no extra requests, persists nothing and never invokes an LLM.
 
 ## Configuration (optional, cordis.patch.yml)
 
